@@ -10,7 +10,7 @@ def post_save_create_profile_receiver(sender, instance, created, **kwargs):
         print("prfile got created")
     else:
         try:
-            profile = UserProfile.objects.get(User=instance)
+            profile = UserProfile.objects.get(user=instance)
             profile.save
         except:
             #create user profile if not exist
