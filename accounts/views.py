@@ -9,6 +9,7 @@ from vendor.forms import VendorForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
+from vendor.models import Vendor
 
 from django.core.exceptions import PermissionDenied
 
@@ -45,7 +46,7 @@ def registerUser(request):
             user.save()
             # Send Email
             email_subject = 'Please activate your account.'
-            email_temp = 'accounts/email/account_verification_email.html'
+            email_temp = 'accounts/emails/account_verification_email.html'
             send_verification_email(request, user, email_subject, email_temp)
             messages.success(request, "Your account has been registered successfully!")
             return redirect('registerUser')
@@ -82,7 +83,7 @@ def registerVendor(request):
 
             # Send Email
             email_subject = 'Please activate your account.'
-            email_temp = 'accounts/email/account_verification_email.html'
+            email_temp = 'accounts/emails/account_verification_email.html'
             send_verification_email(request, user, email_subject, email_temp)
             messages.success(request, "Your account has been registered successfully! Please wait for approval.")
             return redirect('registerVendor')
@@ -154,7 +155,11 @@ def customerDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
-    return render(request, 'accounts/vendorDashboard.html')
+    vendor = Vendor.objects.get(user=request.user)
+    context = {
+        'vendor': vendor,
+    }
+    return render(request, 'accounts/vendorDashboard.html', context)
 
 
 def forgot_password(request):

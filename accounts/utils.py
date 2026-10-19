@@ -31,3 +31,10 @@ def send_verification_email(request, user, email_subject, email_temp):
     to_email = user.email
     mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
     mail.send()
+
+def send_notification(mail_subject, mail_temp, context):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    message = render_to_string(mail_temp, context)
+    to_email = context['user'].email
+    mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
+    mail.send()
